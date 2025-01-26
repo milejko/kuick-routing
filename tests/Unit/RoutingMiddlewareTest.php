@@ -3,7 +3,6 @@
 namespace Tests\Kuick\Unit\Routing;
 
 use Kuick\Http\Message\Response;
-use Kuick\Http\MethodNotAllowedException;
 use Kuick\Routing\Router;
 use Kuick\Routing\RoutingMiddleware;
 use Tests\Kuick\Routing\Unit\Mocks\MockRequestHandler;
@@ -42,18 +41,5 @@ class RoutingMiddlewareTest extends TestCase
         $response = $routingMiddleware->process(new ServerRequest('GET', '/sample', [], 'Hello world!'), new MockRequestHandler());
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('Hello world!', $response->getBody()->getContents());
-    }
-
-    public function testHandlingRoutesWithInvalidMethod(): void
-    {
-        $controllerMock = function (ServerRequestInterface $request): ResponseInterface {
-            return new Response(200, [], $request->getBody()->getContents());
-        };
-        $router = (new Router(new NullLogger()))
-            ->addRoute('/test', $controllerMock, ['GET']);
-
-        $routingMiddleware = new RoutingMiddleware($router, new NullLogger());
-        $this->expectException(MethodNotAllowedException::class);
-        $routingMiddleware->process(new ServerRequest('POST', '/test', [], 'Hello world!'), new MockRequestHandler());
     }
 }

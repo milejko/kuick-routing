@@ -27,11 +27,7 @@ class RoutingMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        try {
-            $executableRoute = $this->router->matchRoute($request);
-        } catch (MethodMismatchedException $exception) {
-            throw new MethodNotAllowedException($exception->getMessage());
-        }
+        $executableRoute = $this->router->matchRoute($request);
         //route not found, continue to the RequestHandler
         if (null === $executableRoute) {
             return $handler->handle($request);

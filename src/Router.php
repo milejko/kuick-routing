@@ -39,7 +39,6 @@ class Router
     public function matchRoute(ServerRequestInterface $request): ?ExecutableRoute
     {
         $requestMethod = $request->getMethod();
-        $mismatchedMethod = null;
         /**
          * @var ExecutableRoute $route
          */
@@ -56,15 +55,11 @@ class Router
                 continue;
             }
             //matching method
-            if (in_array($requestMethod, $routeMethods)) {
-                $this->logger->debug('Matched route: ' . $requestMethod . ':' . $route->path);
-                return $route->setParams($pathParams);
+            if (!in_array($requestMethod, $routeMethods)) {
+                continue;
             }
-            // method mismatch
-            $mismatchedMethod = $route;
-        }
-        if (null !== $mismatchedMethod) {
-            throw new MethodMismatchedException('Method not allowed: ' . $requestMethod . ' for path: ' . $mismatchedMethod->path);
+            $this->logger->debug('Matched route: ' . $requestMethod . ':' . $route->path);
+            return $route->setParams($pathParams);
         }
         return null;
     }

@@ -4,7 +4,6 @@ namespace Tests\Kuick\Unit\Routing;
 
 use Kuick\Routing\Router;
 use Kuick\Routing\ExecutableRoute;
-use Kuick\Routing\MethodMismatchedException;
 use Nyholm\Psr7\ServerRequest;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
@@ -42,8 +41,7 @@ class RouterTest extends TestCase
         $this->assertInstanceOf(ExecutableRoute::class, $executableRoute);
         $this->assertEquals(['GET', 'POST'], $executableRoute->methods);
 
-        //method not allowed
-        $this->expectException(MethodMismatchedException::class);
-        $router->matchRoute(new ServerRequest('PUT', '/test'));
+        //mismatched route
+        $this->assertNull($router->matchRoute(new ServerRequest('PUT', '/test')));
     }
 }
