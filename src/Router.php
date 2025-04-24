@@ -27,15 +27,12 @@ class Router
     {
     }
 
-    public function addRoute(string $path, callable $controller, array $methods = [RequestInterface::METHOD_GET]): self
+    public function addRoute(string $path, object $controller, array $methods = [RequestInterface::METHOD_GET]): self
     {
         $this->routes[] = new ExecutableRoute($path, $controller, $methods);
         return $this;
     }
 
-    /**
-     * @throws MethodMismatchedException
-     */
     public function matchRoute(ServerRequestInterface $request): ?ExecutableRoute
     {
         $requestMethod = $request->getMethod();
